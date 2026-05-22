@@ -8,6 +8,7 @@ import {
 import { withCache } from "./cacheService.js";
 
 const SUBNATIONAL_CACHE_MS = 12 * 60 * 60 * 1000;
+const MAX_RAINFALL_ROWS = 50000;
 
 function normalizeName(value) {
   return String(value ?? "")
@@ -98,8 +99,8 @@ async function fetchHdxAdmin1Rainfall(iso3) {
       const rows = Array.isArray(payload.data) ? payload.data : [];
       allRows = allRows.concat(rows);
 
-      // Stop if we got fewer than the limit (no more pages) or exceeded 50k safety cap
-      if (rows.length < pageLimit || allRows.length >= 50000) {
+      // Stop if we got fewer than the limit (no more pages) or exceeded safety cap
+      if (rows.length < pageLimit || allRows.length >= MAX_RAINFALL_ROWS) {
         hasMore = false;
       } else {
         offset += pageLimit;

@@ -136,11 +136,14 @@ async function fetchGhoIndicator(indicator, isoCodes) {
     const countryRows = rows.filter((row) => row?.SpatialDim === iso3);
     const latestRow = countryRows.sort((a, b) => Number(b?.TimeDim ?? 0) - Number(a?.TimeDim ?? 0))[0];
 
-    if (latestRow && Number.isFinite(Number(latestRow.NumericValue))) {
-      acc[iso3] = {
-        value: Number(latestRow.NumericValue),
-        year: Number(latestRow.TimeDim),
-      };
+    if (latestRow) {
+      const value = Number(latestRow.NumericValue);
+      if (Number.isFinite(value)) {
+        acc[iso3] = {
+          value,
+          year: Number(latestRow.TimeDim),
+        };
+      }
     }
 
     return acc;
