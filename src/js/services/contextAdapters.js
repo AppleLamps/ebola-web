@@ -36,10 +36,15 @@ async function fetchHdxJson(url) {
   });
 
   if (!response.ok) {
-    throw new Error(`HDX request failed: ${response.status}`);
+    throw new Error(`HDX request failed: HTTP ${response.status} for ${url.split("?")[0]}`);
   }
 
-  return response.json();
+  const payload = await response.json();
+  if (!payload || typeof payload !== "object") {
+    throw new Error(`HDX returned malformed response for ${url.split("?")[0]}`);
+  }
+
+  return payload;
 }
 
 async function fetchHdxCountryContext(iso3) {
@@ -117,17 +122,21 @@ async function fetchGhoIndicator(indicator, isoCodes) {
   const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error(`WHO GHO request failed: ${response.status}`);
+    throw new Error(`WHO GHO request failed: HTTP ${response.status} for ${indicator.code}`);
   }
 
   const payload = await response.json();
-  const rows = payload?.value ?? [];
+  if (!payload || typeof payload !== "object") {
+    throw new Error(`WHO GHO returned malformed response for ${indicator.code}`);
+  }
+
+  const rows = Array.isArray(payload.value) ? payload.value : [];
 
   return isoCodes.reduce((acc, iso3) => {
-    const countryRows = rows.filter((row) => row.SpatialDim === iso3);
-    const latestRow = countryRows.sort((a, b) => Number(b.TimeDim) - Number(a.TimeDim))[0];
+    const countryRows = rows.filter((row) => row?.SpatialDim === iso3);
+    const latestRow = countryRows.sort((a, b) => Number(b?.TimeDim ?? 0) - Number(a?.TimeDim ?? 0))[0];
 
-    if (latestRow) {
+    if (latestRow && Number.isFinite(Number(latestRow.NumericValue))) {
       acc[iso3] = {
         value: Number(latestRow.NumericValue),
         year: Number(latestRow.TimeDim),

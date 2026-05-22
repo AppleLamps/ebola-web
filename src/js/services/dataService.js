@@ -77,7 +77,7 @@ function buildContextSummary(countries, indicatorSummary) {
   };
 }
 
-function buildSources({ reports, officialReports, hdxContexts, ghoContext, weatherByCountry, countries }) {
+function buildSources({ reports, officialReports, hdxContexts, ghoContext, weatherByCountry, countries, errors }) {
   const hdxCoverage = countries.filter((country) => {
     const context = hdxContexts[country.iso3];
     return context?.nationalRisk || context?.population || context?.rainfall;
@@ -94,29 +94,45 @@ function buildSources({ reports, officialReports, hdxContexts, ghoContext, weath
       status: reports.length ? "live" : "fallback",
       detail: reports.length
         ? `${reports.length} humanitarian reports ingested.`
-        : "No live results returned; baseline dataset still available.",
+        : errors.reliefweb
+          ? `Unavailable: ${errors.reliefweb}`
+          : "No live results returned; baseline dataset still available.",
     },
     {
       name: "WHO Disease Outbreak News",
       status: officialReports.length ? "live" : "fallback",
       detail: officialReports.length
         ? `${officialReports.length} official Ebola / Sudan virus updates loaded.`
-        : "Official WHO outbreak bulletins unavailable at refresh time.",
+        : errors.whoDon
+          ? `Unavailable: ${errors.whoDon}`
+          : "Official WHO outbreak bulletins unavailable at refresh time.",
     },
     {
       name: "HDX HAPI",
       status: hdxCoverage ? "live" : "fallback",
-      detail: `${hdxCoverage}/${countries.length} tracked countries returned risk, rainfall, or population context.`,
+      detail: hdxCoverage
+        ? `${hdxCoverage}/${countries.length} tracked countries returned risk, rainfall, or population context.`
+        : errors.hdx
+          ? `Unavailable: ${errors.hdx}`
+          : `0/${countries.length} tracked countries returned context data.`,
     },
     {
       name: "WHO GHO",
       status: ghoCoverage ? "live" : "fallback",
-      detail: `${ghoCoverage}/${countries.length} tracked countries returned official capacity indicators.`,
+      detail: ghoCoverage
+        ? `${ghoCoverage}/${countries.length} tracked countries returned official capacity indicators.`
+        : errors.gho
+          ? `Unavailable: ${errors.gho}`
+          : `0/${countries.length} tracked countries returned capacity indicators.`,
     },
     {
       name: "Open-Meteo",
       status: weatherCoverage ? "live" : "fallback",
-      detail: `${weatherCoverage}/${countries.length} tracked countries returned live weather overlay data.`,
+      detail: weatherCoverage
+        ? `${weatherCoverage}/${countries.length} tracked countries returned live weather overlay data.`
+        : errors.weather
+          ? `Unavailable: ${errors.weather}`
+          : `0/${countries.length} tracked countries returned weather data.`,
     },
   ];
 }
@@ -204,6 +220,14 @@ function getSettledValue(result, fallback) {
   return result.status === "fulfilled" ? result.value : fallback;
 }
 
+function getSettledError(result) {
+  if (result.status === "rejected") {
+    const msg = result.reason?.message ?? String(result.reason ?? "Unknown error");
+    return msg;
+  }
+  return null;
+}
+
 async function getBaseline() {
   const response = await fetch("./src/data/ebola-2026-baseline.json");
   if (!response.ok) {
@@ -235,6 +259,14 @@ export async function getOutbreakSnapshot() {
     indicatorsSummary: [],
   });
   const weatherByCountry = getSettledValue(weatherResult, {});
+
+  const errors = {
+    reliefweb: getSettledError(reportsResult),
+    whoDon: getSettledError(officialReportsResult),
+    hdx: getSettledError(hdxResult),
+    gho: getSettledError(ghoResult),
+    weather: getSettledError(weatherResult),
+  };
 
   const countries = baseline.countries.map((country) => {
     const iso3 = COUNTRY_ISO3[country.name] ?? null;
@@ -291,6 +323,7 @@ export async function getOutbreakSnapshot() {
     ghoContext,
     weatherByCountry,
     countries,
+    errors,
   });
 
   return {

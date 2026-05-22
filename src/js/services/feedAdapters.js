@@ -93,48 +93,44 @@ export async function fetchReliefWebReports() {
       limit: 20,
     };
 
-    try {
-      const response = await fetch(RELIEFWEB_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+    const response = await fetch(RELIEFWEB_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
 
-      if (!response.ok) {
-        throw new Error(`ReliefWeb fetch failed: ${response.status}`);
-      }
-
-      const payload = await response.json();
-      const list = payload?.data ?? [];
-      return list.map(normalizeReliefWebItem);
-    } catch (error) {
-      console.warn("ReliefWeb feed unavailable.", error);
-      return [];
+    if (!response.ok) {
+      throw new Error(`ReliefWeb fetch failed: HTTP ${response.status}`);
     }
+
+    const payload = await response.json();
+    if (!payload || typeof payload !== "object") {
+      throw new Error("ReliefWeb returned malformed response body");
+    }
+
+    const list = Array.isArray(payload.data) ? payload.data : [];
+    return list.map(normalizeReliefWebItem);
   });
 }
 
 export async function fetchWhoDiseaseOutbreakNews() {
   return withCache("feed-who-don", FEED_CACHE_MS, async () => {
-    try {
-      const response = await fetch(WHO_DON_ENDPOINT);
-      if (!response.ok) {
-        throw new Error(`WHO DON fetch failed: ${response.status}`);
-      }
-
-      const payload = await response.json();
-      const list = Array.isArray(payload) ? payload : [];
-
-      return list
-        .map(normalizeWhoDonItem)
-        .filter((item) => /ebola|sudan virus|sudan ebolavirus|filovirus/i.test(`${item.title} ${item.summary}`))
-        .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
-        .slice(0, 12);
-    } catch (error) {
-      console.warn("WHO Disease Outbreak News feed unavailable.", error);
-      return [];
+    const response = await fetch(WHO_DON_ENDPOINT);
+    if (!response.ok) {
+      throw new Error(`WHO DON fetch failed: HTTP ${response.status}`);
     }
+
+    const payload = await response.json();
+    if (!payload || (typeof payload !== "object" && !Array.isArray(payload))) {
+      throw new Error("WHO DON returned malformed response body");
+    }
+
+    const list = Array.isArray(payload) ? payload : Array.isArray(payload.value) ? payload.value : [];
+
+    return list
+      .map(normalizeWhoDonItem)
+      .filter((item) => /ebola|sudan virus|sudan ebolavirus|filovirus/i.test(`${item.title} ${item.summary}`))
+      .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+      .slice(0, 12);
   });
 }

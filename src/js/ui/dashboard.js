@@ -197,7 +197,7 @@ export function renderSubnationalStatus(overlay) {
   }
 
   if (!overlay) {
-    status.textContent = "ADM1 rainfall choropleth is available for countries with clean HDX + geoBoundaries joins.";
+    status.textContent = "ADM1 rainfall choropleth is available for countries with clean HDX + geoBoundaries joins. Other countries are not yet supported due to data alignment requirements.";
     return;
   }
 
@@ -207,7 +207,7 @@ export function renderSubnationalStatus(overlay) {
   }
 
   if (!overlay.available) {
-    status.textContent = overlay.message;
+    status.textContent = overlay.message || "ADM1 rainfall data could not be loaded for this country. This may be due to incomplete data coverage or API availability.";
     return;
   }
 
@@ -215,5 +215,8 @@ export function renderSubnationalStatus(overlay) {
     ? `${formatDecimal(overlay.summary.average, 1)}% avg`
     : "avg n/a";
   const periodEnd = overlay.latestReferenceEnd ? toIsoDay(overlay.latestReferenceEnd) : "n/a";
-  status.textContent = `${overlay.countryName}: ${overlay.message} ${average} · latest dekad end ${periodEnd}.`;
+  const coverage = overlay.totalRegions
+    ? ` · ${Math.round(overlay.coveragePct)}% region coverage`
+    : "";
+  status.textContent = `${overlay.countryName}: ${overlay.message} ${average}${coverage} · latest dekad end ${periodEnd}.`;
 }
