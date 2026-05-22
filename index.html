@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Interactive 2026 Ebola outbreak dashboard with regional map, trends, risk signals, and live humanitarian report tracking."
+    />
+    <title>2026 Ebola Outbreak Tracker</title>
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="./src/styles/base.css" />
+    <link rel="stylesheet" href="./src/styles/layout.css" />
+    <link rel="stylesheet" href="./src/styles/components.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Public Health Monitoring</p>
+        <h1>2026 Ebola Outbreak Tracker</h1>
+        <p id="last-updated" class="muted">Loading latest situation...</p>
+      </div>
+      <button id="refresh-btn" class="btn" type="button">Refresh data</button>
+    </header>
+
+    <main class="dashboard-grid">
+      <section class="card kpi-panel" aria-label="Outbreak key metrics">
+        <h2>Key Indicators</h2>
+        <div class="kpi-grid">
+          <article class="kpi-item">
+            <p class="kpi-label">Total suspected</p>
+            <p id="kpi-suspected" class="kpi-value">—</p>
+          </article>
+          <article class="kpi-item">
+            <p class="kpi-label">Total confirmed</p>
+            <p id="kpi-confirmed" class="kpi-value">—</p>
+          </article>
+          <article class="kpi-item">
+            <p class="kpi-label">Total deaths</p>
+            <p id="kpi-deaths" class="kpi-value">—</p>
+          </article>
+          <article class="kpi-item">
+            <p class="kpi-label">Case fatality rate</p>
+            <p id="kpi-cfr" class="kpi-value">—</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="card map-panel" aria-label="Geographic spread map">
+        <div class="panel-header">
+          <h2>Geographic spread</h2>
+          <span class="legend">Marker size = confirmed cases · blue halo = next 24h rainfall</span>
+        </div>
+        <div class="map-toolbar">
+          <label class="map-select-label" for="choropleth-country">ADM1 rainfall anomaly</label>
+          <select id="choropleth-country" class="map-select">
+            <option value="">No ADM1 choropleth</option>
+          </select>
+        </div>
+        <p id="choropleth-status" class="muted choropleth-status">
+          ADM1 rainfall choropleth is available for countries with clean HDX + geoBoundaries joins.
+        </p>
+        <div id="map" class="map"></div>
+      </section>
+
+      <section class="card chart-panel" aria-label="Outbreak trend chart">
+        <div class="panel-header">
+          <h2>Outbreak trend + live reporting activity</h2>
+        </div>
+        <canvas id="trend-canvas" width="860" height="300"></canvas>
+      </section>
+
+      <section class="card analysis-panel" aria-label="Detailed analysis">
+        <h2>Detailed analysis</h2>
+        <ul id="analysis-list" class="analysis-list"></ul>
+      </section>
+
+      <section class="card hotspots-panel" aria-label="Country situation table">
+        <h2>Country breakdown</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Country</th>
+                <th>Suspected</th>
+                <th>Confirmed</th>
+                <th>Deaths</th>
+                <th>Risk level</th>
+                <th>Humanitarian</th>
+                <th>WHO DON</th>
+                <th>IHR</th>
+              </tr>
+            </thead>
+            <tbody id="country-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card official-panel" aria-label="WHO official outbreak updates">
+        <h2>WHO official outbreak updates</h2>
+        <ol id="official-feed" class="feed-list"></ol>
+      </section>
+
+      <section class="card context-panel" aria-label="Response capacity and risk context">
+        <h2>Response context</h2>
+        <div class="mini-kpi-grid">
+          <article class="mini-kpi-item">
+            <p class="kpi-label">Population monitored</p>
+            <p id="ctx-population" class="mini-kpi-value">—</p>
+          </article>
+          <article class="mini-kpi-item">
+            <p class="kpi-label">Avg national risk</p>
+            <p id="ctx-risk" class="mini-kpi-value">—</p>
+          </article>
+          <article class="mini-kpi-item">
+            <p class="kpi-label">Avg rainfall anomaly</p>
+            <p id="ctx-rainfall" class="mini-kpi-value">—</p>
+          </article>
+          <article class="mini-kpi-item">
+            <p class="kpi-label">Avg doctors / 10k</p>
+            <p id="ctx-doctors" class="mini-kpi-value">—</p>
+          </article>
+          <article class="mini-kpi-item">
+            <p class="kpi-label">Avg current temp</p>
+            <p id="ctx-temp" class="mini-kpi-value">—</p>
+          </article>
+          <article class="mini-kpi-item">
+            <p class="kpi-label">Avg forecast rain</p>
+            <p id="ctx-weather-rain" class="mini-kpi-value">—</p>
+          </article>
+        </div>
+        <ul id="indicator-summary-list" class="indicator-summary-list"></ul>
+      </section>
+
+      <section class="card sources-panel" aria-label="Source availability status">
+        <h2>Live source status</h2>
+        <div id="sources-list" class="source-grid"></div>
+      </section>
+
+      <section class="card feed-panel" aria-label="Latest situational reports">
+        <h2>Humanitarian situation reports</h2>
+        <ol id="reports-feed" class="feed-list"></ol>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <p>
+        Data combines local baseline outbreak records with live ReliefWeb, WHO, and HDX context feeds.
+      </p>
+      <p id="status-line" class="muted"></p>
+    </footer>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script type="module" src="./src/js/main.js"></script>
+  </body>
+</html>

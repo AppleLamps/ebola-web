@@ -1,0 +1,85 @@
+.page-header,
+.page-footer {
+  width: min(1400px, 94vw);
+  margin: 1.1rem auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.page-header h1 {
+  font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+  margin-bottom: 0.35rem;
+}
+
+.dashboard-grid {
+  width: min(1400px, 94vw);
+  margin: 0 auto 2rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-areas:
+    "kpi kpi kpi kpi map map map map map map map map"
+    "chart chart chart chart chart chart chart chart analysis analysis analysis analysis"
+    "hotspots hotspots hotspots hotspots hotspots hotspots official official official official official official"
+    "context context context context context context sources sources sources sources sources sources"
+    "feed feed feed feed feed feed feed feed feed feed feed feed";
+}
+
+.kpi-panel {
+  grid-area: kpi;
+}
+
+.map-panel {
+  grid-area: map;
+}
+
+.chart-panel {
+  grid-area: chart;
+}
+
+.analysis-panel {
+  grid-area: analysis;
+}
+
+.hotspots-panel {
+  grid-area: hotspots;
+}
+
+.official-panel {
+  grid-area: official;
+}
+
+.context-panel {
+  grid-area: context;
+}
+
+.sources-panel {
+  grid-area: sources;
+}
+
+.feed-panel {
+  grid-area: feed;
+}
+
+@media (max-width: 1080px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "kpi"
+      "map"
+      "chart"
+      "analysis"
+      "hotspots"
+      "official"
+      "context"
+      "sources"
+      "feed";
+  }
+
+  .page-header,
+  .page-footer {
+    flex-direction: column;
+  }
+}

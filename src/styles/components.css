@@ -1,0 +1,259 @@
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.65rem;
+}
+
+.legend {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.kpi-grid {
+  margin-top: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.kpi-item {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.8rem;
+  background: rgba(11, 19, 32, 0.35);
+}
+
+.kpi-label {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.kpi-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 0.4rem;
+}
+
+.mini-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.mini-kpi-item {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.8rem;
+  background: rgba(11, 19, 32, 0.35);
+}
+
+.mini-kpi-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-top: 0.35rem;
+}
+
+.map {
+  width: 100%;
+  min-height: 360px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+.map-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+  margin-bottom: 0.55rem;
+}
+
+.map-select-label {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.map-select {
+  appearance: none;
+  min-width: 220px;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(11, 19, 32, 0.88);
+  color: #f4f8ff;
+}
+
+.choropleth-status {
+  margin: 0 0 0.75rem;
+  font-size: 0.84rem;
+}
+
+#trend-canvas {
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(8, 12, 22, 0.7);
+}
+
+.analysis-list {
+  margin: 0.8rem 0 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.analysis-list li {
+  color: #d9e8fa;
+  line-height: 1.45;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 0.8rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  padding: 0.55rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-block;
+}
+
+.badge-high {
+  color: #ffd4d4;
+  background: rgba(214, 64, 64, 0.25);
+  border: 1px solid rgba(214, 64, 64, 0.45);
+}
+
+.badge-medium {
+  color: #ffecc7;
+  background: rgba(255, 188, 55, 0.2);
+  border: 1px solid rgba(255, 188, 55, 0.4);
+}
+
+.badge-low {
+  color: #c9ffe2;
+  background: rgba(59, 187, 117, 0.2);
+  border: 1px solid rgba(59, 187, 117, 0.45);
+}
+
+.feed-list {
+  margin: 0.8rem 0 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.feed-list li {
+  line-height: 1.35;
+}
+
+.feed-date {
+  color: var(--muted);
+  font-size: 0.75rem;
+  display: inline-block;
+  margin-right: 0.45rem;
+}
+
+.indicator-summary-list {
+  margin: 0.9rem 0 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.indicator-summary-list li {
+  line-height: 1.4;
+}
+
+.source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .mini-kpi-grid,
+  .source-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .map-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .map-select {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+.source-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.8rem;
+  background: rgba(11, 19, 32, 0.35);
+}
+
+.source-card h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.source-card p {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+.status-badge {
+  display: inline-block;
+  margin-top: 0.55rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.status-live {
+  color: #c9ffe2;
+  background: rgba(59, 187, 117, 0.2);
+  border: 1px solid rgba(59, 187, 117, 0.45);
+}
+
+.status-fallback {
+  color: #ffecc7;
+  background: rgba(255, 188, 55, 0.2);
+  border: 1px solid rgba(255, 188, 55, 0.4);
+}
+
+.page-footer {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+  align-items: center;
+}

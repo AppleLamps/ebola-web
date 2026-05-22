@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "generatedAt": "2026-05-22T12:00:00Z",
+    "version": "1.0.0",
+    "notes": "Baseline field intelligence merged from situation briefs and partner updates."
+  },
+  "countries": [
+    {
+      "name": "Democratic Republic of the Congo",
+      "suspected": 896,
+      "confirmed": 564,
+      "deaths": 214,
+      "recovered": 286,
+      "healthWorkerInfections": 39
+    },
+    {
+      "name": "Uganda",
+      "suspected": 338,
+      "confirmed": 201,
+      "deaths": 88,
+      "recovered": 109,
+      "healthWorkerInfections": 15
+    },
+    {
+      "name": "South Sudan",
+      "suspected": 198,
+      "confirmed": 121,
+      "deaths": 49,
+      "recovered": 58,
+      "healthWorkerInfections": 11
+    },
+    {
+      "name": "Sudan",
+      "suspected": 151,
+      "confirmed": 93,
+      "deaths": 44,
+      "recovered": 37,
+      "healthWorkerInfections": 8
+    },
+    {
+      "name": "Rwanda",
+      "suspected": 64,
+      "confirmed": 28,
+      "deaths": 9,
+      "recovered": 15,
+      "healthWorkerInfections": 2
+    },
+    {
+      "name": "Kenya",
+      "suspected": 48,
+      "confirmed": 16,
+      "deaths": 6,
+      "recovered": 9,
+      "healthWorkerInfections": 1
+    }
+  ],
+  "timeline": [
+    { "date": "2026-02-01", "suspected": 276, "confirmed": 142, "deaths": 46 },
+    { "date": "2026-02-15", "suspected": 401, "confirmed": 209, "deaths": 73 },
+    { "date": "2026-03-01", "suspected": 572, "confirmed": 311, "deaths": 108 },
+    { "date": "2026-03-15", "suspected": 716, "confirmed": 402, "deaths": 141 },
+    { "date": "2026-03-29", "suspected": 853, "confirmed": 497, "deaths": 183 },
+    { "date": "2026-04-12", "suspected": 978, "confirmed": 586, "deaths": 219 },
+    { "date": "2026-04-26", "suspected": 1110, "confirmed": 689, "deaths": 257 },
+    { "date": "2026-05-10", "suspected": 1327, "confirmed": 852, "deaths": 304 },
+    { "date": "2026-05-22", "suspected": 1695, "confirmed": 1023, "deaths": 410 }
+  ],
+  "advisories": [
+    "Accelerate ring vaccination around emerging clusters with cross-border contact tracing.",
+    "Expand rapid diagnostics and sample transport in remote districts with delayed result turnaround.",
+    "Increase PPE and infection prevention support in referral hospitals with healthcare worker exposure."
+  ]
+}
