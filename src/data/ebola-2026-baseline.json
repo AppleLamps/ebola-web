@@ -1,57 +1,57 @@
 {
   "meta": {
-    "generatedAt": "2026-05-22T12:00:00Z",
-    "version": "1.0.0",
-    "notes": "Baseline field intelligence merged from situation briefs and partner updates."
+    "generatedAt": "2026-05-26T10:30:00Z",
+    "version": "1.1.0",
+    "notes": "Baseline field intelligence merged from situation briefs and partner updates as of 26 May 2026."
   },
   "countries": [
     {
       "name": "Democratic Republic of the Congo",
-      "suspected": 896,
-      "confirmed": 564,
-      "deaths": 214,
-      "recovered": 286,
-      "healthWorkerInfections": 39
+      "suspected": 1018,
+      "confirmed": 638,
+      "deaths": 245,
+      "recovered": 305,
+      "healthWorkerInfections": 42
     },
     {
       "name": "Uganda",
-      "suspected": 338,
-      "confirmed": 201,
-      "deaths": 88,
-      "recovered": 109,
-      "healthWorkerInfections": 15
+      "suspected": 385,
+      "confirmed": 231,
+      "deaths": 100,
+      "recovered": 118,
+      "healthWorkerInfections": 17
     },
     {
       "name": "South Sudan",
-      "suspected": 198,
-      "confirmed": 121,
-      "deaths": 49,
-      "recovered": 58,
-      "healthWorkerInfections": 11
+      "suspected": 227,
+      "confirmed": 140,
+      "deaths": 57,
+      "recovered": 64,
+      "healthWorkerInfections": 12
     },
     {
       "name": "Sudan",
-      "suspected": 151,
-      "confirmed": 93,
-      "deaths": 44,
-      "recovered": 37,
-      "healthWorkerInfections": 8
+      "suspected": 173,
+      "confirmed": 108,
+      "deaths": 51,
+      "recovered": 41,
+      "healthWorkerInfections": 9
     },
     {
       "name": "Rwanda",
-      "suspected": 64,
-      "confirmed": 28,
-      "deaths": 9,
-      "recovered": 15,
-      "healthWorkerInfections": 2
+      "suspected": 73,
+      "confirmed": 33,
+      "deaths": 12,
+      "recovered": 17,
+      "healthWorkerInfections": 3
     },
     {
       "name": "Kenya",
-      "suspected": 48,
-      "confirmed": 16,
-      "deaths": 6,
-      "recovered": 9,
-      "healthWorkerInfections": 1
+      "suspected": 44,
+      "confirmed": 18,
+      "deaths": 13,
+      "recovered": 11,
+      "healthWorkerInfections": 2
     }
   ],
   "timeline": [
@@ -63,11 +63,12 @@
     { "date": "2026-04-12", "suspected": 978, "confirmed": 586, "deaths": 219 },
     { "date": "2026-04-26", "suspected": 1110, "confirmed": 689, "deaths": 257 },
     { "date": "2026-05-10", "suspected": 1327, "confirmed": 852, "deaths": 304 },
-    { "date": "2026-05-22", "suspected": 1695, "confirmed": 1023, "deaths": 410 }
+    { "date": "2026-05-22", "suspected": 1695, "confirmed": 1023, "deaths": 410 },
+    { "date": "2026-05-26", "suspected": 1920, "confirmed": 1168, "deaths": 478 }
   ],
   "advisories": [
-    "Accelerate ring vaccination around emerging clusters with cross-border contact tracing.",
-    "Expand rapid diagnostics and sample transport in remote districts with delayed result turnaround.",
-    "Increase PPE and infection prevention support in referral hospitals with healthcare worker exposure."
+    "New confirmed clusters reported near Goma and in Ituri; intensify ring vaccination and contact tracing in those zones.",
+    "Cross-border movement from South Sudan into Uganda continues to drive secondary chains; strengthen screening at key transit points.",
+    "Healthcare worker infections rising in referral facilities — deploy additional IPC training teams and PPE stocks immediately."
   ]
 }
