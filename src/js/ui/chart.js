@@ -76,14 +76,26 @@ function drawXAxisLabels(context, timeline, width, height, padding) {
   context.textAlign = "start";
 }
 
+const DEFAULT_CHART_WIDTH = 860;
+const CHART_HEIGHT = 300;
+
 export function renderTrendChart(canvas, timeline) {
-  if (!canvas) {
+  if (!canvas || !timeline || !timeline.length) {
     return;
   }
 
   const context = canvas.getContext("2d");
-  const width = canvas.width;
-  const height = canvas.height;
+  const dpr = window.devicePixelRatio || 1;
+  const displayWidth = canvas.clientWidth || DEFAULT_CHART_WIDTH;
+  const displayHeight = CHART_HEIGHT;
+
+  canvas.width = displayWidth * dpr;
+  canvas.height = displayHeight * dpr;
+  canvas.style.height = `${displayHeight}px`;
+  context.scale(dpr, dpr);
+
+  const width = displayWidth;
+  const height = displayHeight;
   const padding = 32;
 
   context.clearRect(0, 0, width, height);

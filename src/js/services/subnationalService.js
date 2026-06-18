@@ -8,6 +8,7 @@ import {
 import { withCache } from "./cacheService.js";
 
 const SUBNATIONAL_CACHE_MS = 12 * 60 * 60 * 1000;
+const MAX_RAINFALL_ROWS = 50000;
 
 function normalizeName(value) {
   return String(value ?? "")
@@ -47,37 +48,66 @@ async function fetchGeoBoundariesAdm1(iso3) {
   return withCache(`geoboundaries-${iso3}-adm1`, SUBNATIONAL_CACHE_MS, async () => {
     const metadataResponse = await fetch(`${GEOBOUNDARIES_API_BASE}/${iso3}/ADM1/`);
     if (!metadataResponse.ok) {
-      throw new Error(`geoBoundaries metadata fetch failed: ${metadataResponse.status}`);
+      throw new Error(`geoBoundaries metadata fetch failed: HTTP ${metadataResponse.status}`);
     }
 
     const metadata = await metadataResponse.json();
-    const geoJsonResponse = await fetch(metadata.simplifiedGeometryGeoJSON);
-    if (!geoJsonResponse.ok) {
-      throw new Error(`geoBoundaries geometry fetch failed: ${geoJsonResponse.status}`);
+    if (!metadata || !metadata.simplifiedGeometryGeoJSON) {
+      throw new Error("geoBoundaries metadata missing geometry URL");
     }
 
-    return geoJsonResponse.json();
+    const geoJsonResponse = await fetch(metadata.simplifiedGeometryGeoJSON);
+    if (!geoJsonResponse.ok) {
+      throw new Error(`geoBoundaries geometry fetch failed: HTTP ${geoJsonResponse.status}`);
+    }
+
+    const geoJson = await geoJsonResponse.json();
+    if (!geoJson || !Array.isArray(geoJson.features)) {
+      throw new Error("geoBoundaries returned invalid GeoJSON");
+    }
+
+    return geoJson;
   });
 }
 
 async function fetchHdxAdmin1Rainfall(iso3) {
   return withCache(`hdx-rainfall-${iso3}-adm1`, SUBNATIONAL_CACHE_MS, async () => {
-    const response = await fetch(
-      `${HDX_HAPI_BASE}/climate/rainfall?location_code=${iso3}&admin_level=1&limit=10000`,
-      {
-        headers: {
-          "X-HDX-HAPI-APP-IDENTIFIER": HDX_APP_IDENTIFIER,
-        },
-      },
-    );
+    const pageLimit = 10000;
+    let allRows = [];
+    let offset = 0;
+    let hasMore = true;
 
-    if (!response.ok) {
-      throw new Error(`HDX admin rainfall fetch failed: ${response.status}`);
+    while (hasMore) {
+      const response = await fetch(
+        `${HDX_HAPI_BASE}/climate/rainfall?location_code=${iso3}&admin_level=1&limit=${pageLimit}&offset=${offset}`,
+        {
+          headers: {
+            "X-HDX-HAPI-APP-IDENTIFIER": HDX_APP_IDENTIFIER,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HDX admin rainfall fetch failed: HTTP ${response.status}`);
+      }
+
+      const payload = await response.json();
+      if (!payload || typeof payload !== "object") {
+        throw new Error("HDX admin rainfall returned malformed response");
+      }
+
+      const rows = Array.isArray(payload.data) ? payload.data : [];
+      allRows = allRows.concat(rows);
+
+      // Stop if we got fewer than the limit (no more pages) or exceeded safety cap
+      if (rows.length < pageLimit || allRows.length >= MAX_RAINFALL_ROWS) {
+        hasMore = false;
+      } else {
+        offset += pageLimit;
+      }
     }
 
-    const payload = await response.json();
-    const rows = Array.isArray(payload?.data) ? payload.data : [];
-    const byAdmin1 = latestRowByAdmin1(rows);
+    const byAdmin1 = latestRowByAdmin1(allRows);
     const latestReferenceEnd = [...byAdmin1.values()].reduce((latest, row) => {
       const stamp = Date.parse(row.reference_period_end ?? row.reference_period_start ?? "");
       if (!latest || stamp > latest.stamp) {
@@ -93,6 +123,7 @@ async function fetchHdxAdmin1Rainfall(iso3) {
     return {
       byAdmin1,
       latestReferenceEnd: latestReferenceEnd?.value ?? null,
+      totalRowsFetched: allRows.length,
     };
   });
 }

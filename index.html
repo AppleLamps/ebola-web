@@ -55,7 +55,14 @@
       <section class="card map-panel" aria-label="Geographic spread map">
         <div class="panel-header">
           <h2>Geographic spread</h2>
-          <span class="legend">Marker size = confirmed cases · blue halo = next 24h rainfall</span>
+        </div>
+        <div class="map-legend">
+          <div class="legend-item"><span class="legend-swatch" style="background:#ff5d5d"></span> High risk</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#ffc85f"></span> Medium risk</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#55d69d"></span> Low risk</div>
+          <div class="legend-sep"></div>
+          <div class="legend-item"><span class="legend-swatch legend-halo" style="background:#29b6f6"></span> 24h rainfall halo</div>
+          <div class="legend-item"><span class="legend-note">Marker size = confirmed cases</span></div>
         </div>
         <div class="map-toolbar">
           <label class="map-select-label" for="choropleth-country">ADM1 rainfall anomaly</label>
@@ -64,7 +71,7 @@
           </select>
         </div>
         <p id="choropleth-status" class="muted choropleth-status">
-          ADM1 rainfall choropleth is available for countries with clean HDX + geoBoundaries joins.
+          ADM1 rainfall choropleth is available for countries with clean HDX + geoBoundaries joins. Other countries are not yet supported due to data alignment requirements.
         </p>
         <div id="map" class="map"></div>
       </section>
@@ -73,7 +80,7 @@
         <div class="panel-header">
           <h2>Outbreak trend + live reporting activity</h2>
         </div>
-        <canvas id="trend-canvas" width="860" height="300"></canvas>
+        <canvas id="trend-canvas" height="300"></canvas>
       </section>
 
       <section class="card analysis-panel" aria-label="Detailed analysis">

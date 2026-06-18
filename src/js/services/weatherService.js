@@ -26,7 +26,9 @@ function normalizeWeatherEntry(entry) {
 }
 
 export async function fetchWeatherContexts(countries) {
-  const weatherCountries = countries.filter((country) => Array.isArray(country.coordinates));
+  const weatherCountries = countries.filter(
+    (country) => Array.isArray(country.coordinates) && country.coordinates.length >= 2,
+  );
   const cacheKey = `weather-${weatherCountries.map((country) => country.name).join("-")}`;
 
   return withCache(cacheKey, WEATHER_CACHE_MS, async () => {
@@ -34,22 +36,23 @@ export async function fetchWeatherContexts(countries) {
       return {};
     }
 
-    try {
-      const response = await fetch(buildBatchUrl(weatherCountries));
-      if (!response.ok) {
-        throw new Error(`Open-Meteo fetch failed: ${response.status}`);
-      }
-
-      const payload = await response.json();
-      const list = Array.isArray(payload) ? payload : [payload];
-
-      return weatherCountries.reduce((acc, country, index) => {
-        acc[country.name] = normalizeWeatherEntry(list[index]);
-        return acc;
-      }, {});
-    } catch (error) {
-      console.warn("Open-Meteo weather feed unavailable.", error);
-      return {};
+    const response = await fetch(buildBatchUrl(weatherCountries));
+    if (!response.ok) {
+      throw new Error(`Open-Meteo fetch failed: HTTP ${response.status}`);
     }
+
+    const payload = await response.json();
+    if (!payload || (typeof payload !== "object" && !Array.isArray(payload))) {
+      throw new Error("Open-Meteo returned malformed response body");
+    }
+
+    const list = Array.isArray(payload) ? payload : [payload];
+
+    return weatherCountries.reduce((acc, country, index) => {
+      if (list[index]) {
+        acc[country.name] = normalizeWeatherEntry(list[index]);
+      }
+      return acc;
+    }, {});
   });
 }
